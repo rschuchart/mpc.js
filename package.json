@@ -7,7 +7,10 @@
   ],
   "main": "lib/node-mpc.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postversion": "npm_scripts/postversion.sh",
+    "prepublish": "npm_scripts/prepublish.sh",
+    "publish": "npm_scripts/publish.sh"
   },
   "repository": {
     "type": "git",
@@ -29,6 +32,7 @@
   "devDependencies": {
     "browserify": "^11.0.1",
     "exorcist": "^0.4.0",
-    "tsify": "^0.11.11"
+    "tsify": "^0.11.11",
+    "typescript": "^1.5.3"
   }
 }

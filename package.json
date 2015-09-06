@@ -1,0 +1,34 @@
+{
+  "name": "mpc.js",
+  "version": "1.0.0",
+  "description": "A javascript client library for the Music Player Daemon",
+  "files": [
+    "lib"
+  ],
+  "main": "lib/node-mpc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rschuchart/mpc.js.git"
+  },
+  "keywords": [
+    "mpd"
+  ],
+  "author": "Roderic Schuchart <rschuchart@evandor.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rschuchart/mpc.js/issues"
+  },
+  "homepage": "https://github.com/rschuchart/mpc.js#readme",
+  "dependencies": {
+    "base64-js": "0.0.8",
+    "text-encoder-lite-module": "rschuchart/TextEncoderLiteModule"
+  },
+  "devDependencies": {
+    "browserify": "^11.0.1",
+    "exorcist": "^0.4.0",
+    "tsify": "^0.11.11"
+  }
+}

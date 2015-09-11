@@ -1,12 +1,33 @@
 /// <reference path="../typings/es6-map.d.ts" />
 
+/**
+ * The current status of the player.
+ */
 export class MPDStatus {
 	
+	/**
+	 * "play", "stop", or "pause""
+	 */
 	state: string;
+	
+	/**
+	 * index of the currently playing song within the playlist
+	 */
 	song: number;
+	
+	/**
+	 * Playlist songid of the currently playing song
+	 */
 	songId: number;
+	
+	/**
+	 * Total time (in seconds) elapsed within the current song
+	 */
 	elapsed: number;
 
+	/**
+	 * 0-100
+	 */
 	volume: number;
 	playlistVersion: number;
 	playlistLength: number;
@@ -16,7 +37,14 @@ export class MPDStatus {
 	single: boolean;
 	consume: boolean;
 
+	/**
+	 * Instantaneous bitrate in kbps
+	 */
 	bitrate: number;
+	
+	/**
+	 * sampleRate:bits:channels
+	 */
 	audio: string;
 	
 	constructor(valueMap: Map<string, string>) {
@@ -36,8 +64,14 @@ export class MPDStatus {
 	}
 }
 
+/**
+ * The types of objects in the music database
+ */
 export enum MPDDirectoryEntryType { Directory, MusicFile, Playlist }
 
+/**
+ * Base class for objects in the music database.
+ */
 export class MPDDirectoryEntry {
 
 	path: string;
@@ -53,7 +87,10 @@ export class MPDDirectoryEntry {
 			return new MPDPlaylist(valueMap);
 		}
 	}
-	
+
+	/**
+	 * Get the file/directory name from the path of this object
+	 */	
 	getName(): string {
 		var separatorIndex = this.path.lastIndexOf('/');
 		if (separatorIndex >= 0) {
@@ -63,6 +100,9 @@ export class MPDDirectoryEntry {
 		}
 	}
 	
+	/**
+	 * Get the BasePath of this object
+	 */	
 	getBasePath(): string {
 		var separatorIndex = this.path.lastIndexOf('/');
 		if (separatorIndex >= 0) {
@@ -73,6 +113,9 @@ export class MPDDirectoryEntry {
 	}
 }
 
+/**
+ * Metadata for a music file.
+ */
 export class MPDMusicFile extends MPDDirectoryEntry {
 
 	title: string;
@@ -108,6 +151,9 @@ export class MPDMusicFile extends MPDDirectoryEntry {
 	}
 }
 
+/**
+ * Metadata for a directory.
+ */
 export class MPDDirectory extends MPDDirectoryEntry {
 
 	constructor(valueMap: Map<string, string>) {
@@ -118,6 +164,9 @@ export class MPDDirectory extends MPDDirectoryEntry {
 	}
 }
 
+/**
+ * Metadata for a playlist file.
+ */
 export class MPDPlaylist extends MPDDirectoryEntry {
 
 	constructor(valueMap: Map<string, string>) {
@@ -128,6 +177,9 @@ export class MPDPlaylist extends MPDDirectoryEntry {
 	}
 }
 
+/**
+ * An entry in a playlist.
+ */
 export class MPDPlaylistItem {
 
 	id: number;
@@ -173,6 +225,9 @@ export class MPDPlaylistItem {
 	}
 }
 
+/**
+ * Metadata for a stored playlist.
+ */
 export class MPDStoredPlaylist {
 
 	name: string

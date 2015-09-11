@@ -1,5 +1,9 @@
 /// <reference path="../typings/es6-promise.d.ts" />
 
+/**
+ * Implements the [general syntax](http://www.musicpd.org/doc/protocol/syntax.html)
+ * of the [Music Player Daemon protocol](http://www.musicpd.org/doc/protocol/index.html)
+ */
 export class MPDProtocol {
 
 	private static failureRegExp = /ACK \[([0-9]+)@[0-9]+\] \{[^\}]*\} (.*)/;
@@ -13,10 +17,24 @@ export class MPDProtocol {
 	private queuedRequests: MPDRequest[];
 	private receivedLines: string[];
 	
+	/**
+	 * The major version of the connected daemon
+	 */
 	mpdMajorVersion: number;
+
+	/**
+	 * The minor version of the connected daemon
+	 */
 	mpdMinorVersion: number;
+	
+	/**
+	 * The patch version of the connected daemon
+	 */
 	mpdPatchVersion: number;
 
+	/**
+	 * Create an instance that connects to the daemon via the given connection.
+	 */
 	constructor(connection: SocketWrapper) {
 		this.connection = connection;
 		this.connection.connect((msg) => this.processReceivedMessage(msg));
@@ -27,17 +45,24 @@ export class MPDProtocol {
 		this.receivedLines = [];
 	}
 
+	/**
+	 * Register an observer that will get notified when there is a change in one of the daemon's subsystems.
+	 */
 	registerObserver(observer: MPDObserver) {
 		this.observers.push(observer);
 	}
-	
+
 	unregisterObserver(observer: MPDObserver) {
 		var index = this.observers.indexOf(observer);
 		if (index >= 0) {
 			this.observers.splice(index, 1);
 		}
 	}
-	
+
+	/**
+	 * Send a command to the daemon. The returned promise will be resolved with an array 
+	 * containing the lines of the daemon's response.
+	 */	
 	sendCommand(cmd: string): Promise<string[]> {
 		return new Promise<string[]>((resolve, reject) => {
 			var mpdRequest = new MPDRequest(cmd, (lines: string[]) => resolve(lines), (mpdError: MPDError) => reject(mpdError));
@@ -136,15 +161,38 @@ export class MPDProtocol {
 	}
 }
 
+/**
+ * Interface for wrapping different ways of connecting to the daemon
+ * (usually node.js Sockets or browser WebSockets).
+ */
 export interface SocketWrapper {
+	/**
+	 * This method will be called to initiate the connection.
+	 * @param receive	This callback should be called when data from the daemon is received.
+	 */
 	connect(receive: (msg: string) => void);
+	
+	/**
+	 * This method will be called to send data to the daemon.
+	 */
 	send(msg: string): void;
 }
 
+/**
+ * Interface for observers that want to get notified of changes in one of the daemon's subsystems.
+ */
 export interface MPDObserver {
+	/**
+	 * This method is called when there is a change in one or more of the daemon's subsystems.
+	 * The subsystems are listed in the [MPD documentation](http://www.musicpd.org/doc/protocol/command_reference.html#status_commands)
+	 * for the "idle" command.
+	 */
 	subsystemsChanged: (subsystems: string[]) => void;
 }
 
+/**
+ * A failure response from the daemon.
+ */
 export class MPDError {
 	errorCode: number;
 	errorMessage: string;

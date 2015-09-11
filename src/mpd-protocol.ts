@@ -70,6 +70,39 @@ export class MPDProtocol {
 		});
 	}
 
+	/**
+	 * Parse the daemon response for a command.
+	 * @param lines		The daemon response.
+	 * @param markers	Markers are keys denoting the start of a new object within the response.
+	 * @param convert	Converts a key-value Map from the response into the desired target object. 
+	 */	
+	parse<T>(lines: string[], markers: string[], convert: (valueMap: Map<string, string>) => T): T[] {
+		var result = new Array<T>();
+		var currentValueMap = new Map<string, string>();
+		var lineCount = 0;
+
+		lines.forEach((line) => {
+			var colonIndex = line.indexOf(':');
+			if (colonIndex > 0) {
+				var key = line.substring(0, colonIndex);
+				var value = line.substring(colonIndex + 2);
+				if ((lineCount > 0) && markers.some(marker => (marker == key))) {
+					result.push(convert(currentValueMap));
+					currentValueMap = new Map<string, string>();
+				}
+				currentValueMap.set(key, value);
+				lineCount++;
+			} else {
+				console.log('Huh? "' + line + '" at line ' + lineCount);
+			}
+		});
+		if (lineCount > 0) {
+			result.push(convert(currentValueMap));
+		}
+
+		return result;
+	}	
+
 	private enqueueRequest(mpdRequest: MPDRequest) {
 		this.queuedRequests.push(mpdRequest);
 		if (this.idle) {

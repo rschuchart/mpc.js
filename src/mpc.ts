@@ -50,6 +50,7 @@ export class MPC extends MPDProtocol {
 	 * given target index in the order in which they currently appear in the playlist.
 	 */
 	moveInCurrentPlaylist(sourceIndices: number[], targetIndex: number) {
+		sourceIndices.sort((a: number, b: number) => (a - b))
 		for (var i = 0; i < sourceIndices.length; i++) {
 			var sourceIndex = sourceIndices[i];
 			if (sourceIndex < targetIndex) {
@@ -88,7 +89,7 @@ export class MPC extends MPDProtocol {
 	/**
 	 * Jump to the song with the given index and start playing.
 	 */
-	goto(index: number) {
+	jump(index: number) {
 		this.sendCommand('play ' + index);
 	}
 
@@ -186,52 +187,25 @@ export class MPC extends MPDProtocol {
 
 	/**
 	 * Start updating the music database: find new files, remove deleted files, update modified files.
-	 * @param directory	Update only this directory and its subdirectories.
+	 * @param directoryPath	Update only this directory and its subdirectories.
 	 */
-	update(directory?: MPDDirectory) {
+	update(directoryPath?: string) {
 		var cmdString = 'update';
-		if (directory) {
-			cmdString += ' "' + directory.path + '"';
+		if (directoryPath) {
+			cmdString += ' "' + directoryPath + '"';
 		}
 		this.sendCommand(cmdString);
 	}
 	
 	/**
 	 * Start rescanning the music database. Same as [[update]], but also rescans unmodified files.
-	 * @param directory	Rescan only this directory and its subdirectories.
+	 * @param directoryPath	Rescan only this directory and its subdirectories.
 	 */
-	rescan(directory?: MPDDirectory) {
+	rescan(directoryPath?: string) {
 		var cmdString = 'rescan';
-		if (directory) {
-			cmdString += ' "' + directory.path + '"';
+		if (directoryPath) {
+			cmdString += ' "' + directoryPath + '"';
 		}
 		this.sendCommand(cmdString);
 	}
-	
-	parse<T>(lines: string[], markers: string[], convert: (valueMap: Map<string, string>) => T): T[] {
-		var result = new Array<T>();
-		var currentValueMap = new Map<string, string>();
-		var lineCount = 0;
-
-		lines.forEach((line) => {
-			var colonIndex = line.indexOf(':');
-			if (colonIndex > 0) {
-				var key = line.substring(0, colonIndex);
-				var value = line.substring(colonIndex + 2);
-				if ((lineCount > 0) && markers.some(marker => (marker == key))) {
-					result.push(convert(currentValueMap));
-					currentValueMap = new Map<string, string>();
-				}
-				currentValueMap.set(key, value);
-				lineCount++;
-			} else {
-				console.log('Huh? "' + line + '" at line ' + lineCount);
-			}
-		});
-		if (lineCount > 0) {
-			result.push(convert(currentValueMap));
-		}
-
-		return result;
-	}	
 }

@@ -3,36 +3,25 @@ import { Socket, connect } from 'net';
 import { SocketWrapper } from './mpd-protocol';
 import { MPC } from './mpc';
 
-export function viaTcpSocket(hostname: string, port: number): MPC {
+/**
+ * Connect to MPD via a TCP socket.
+ */
+export function viaTcpSocket(hostname: string, port: number = 6600): MPC {
 	return new MPC(new TcpSocketWrapper(hostname, port));
 }
 
+/**
+ * Connect to MPD via a Unix socket.
+ */
 export function viaUnixSocket(path: string): MPC {
 	return new MPC(new UnixSocketWrapper(path));
 }
 
+/*
 export function viaWebSocket(uri: string): MPC {
 	return new MPC(new WebSocketWrapper(uri));
 }
-
-class WebSocketWrapper implements SocketWrapper {
-
-	private uri: string;
-	private wsClient: WebSocket;
-	
-	constructor(uri: string) {
-		this.uri = uri;
-	}
-
-	connect(receive: (msg: string) => void) {
-		this.wsClient = new WebSocket(this.uri, ['base64']);
-		this.wsClient.onmessage = (e) => receive(new Buffer(e.data, 'base64').toString('utf8'));
-	}
-	
-	send(msg: string) {
-		this.wsClient.send(new Buffer(msg).toString('base64'));
-	}
-}
+*/
 
 class TcpSocketWrapper implements SocketWrapper {
 	
@@ -79,3 +68,24 @@ class UnixSocketWrapper implements SocketWrapper {
 		this.socket.write(msg);
 	}
 }
+
+/*
+class WebSocketWrapper implements SocketWrapper {
+
+	private uri: string;
+	private wsClient: WebSocket;
+	
+	constructor(uri: string) {
+		this.uri = uri;
+	}
+
+	connect(receive: (msg: string) => void) {
+		this.wsClient = new WebSocket(this.uri, ['base64']);
+		this.wsClient.onmessage = (e) => receive(new Buffer(e.data, 'base64').toString('utf8'));
+	}
+	
+	send(msg: string) {
+		this.wsClient.send(new Buffer(msg).toString('base64'));
+	}
+}
+*/

@@ -5,6 +5,13 @@ import { TextEncoderLite, TextDecoderLite } from 'text-encoder-lite-module';
 import { SocketWrapper } from './mpd-protocol';
 import { MPC } from './mpc';
 
+/**
+ * Connect to MPD via a WebSocket.
+ */
+export function viaWebSocket(uri: string): MPC {
+	return new MPC(new WebSocketConnection(uri));
+}
+
 export class WebSocketConnection implements SocketWrapper {
 
 	private uri: string;
@@ -26,8 +33,4 @@ export class WebSocketConnection implements SocketWrapper {
 	send(msg: string) {
 		this.wsClient.send(base64.fromByteArray(this.textEncoder.encode(msg)));
 	}
-}
-
-export function viaWebSocket(uri: string): MPC {
-	return new MPC(new WebSocketConnection(uri));
 }

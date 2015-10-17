@@ -2,7 +2,7 @@ import { MPDProtocol, MPDObserver } from './mpd-protocol';
 import { MPDStatus, MPDDirectoryEntry, MPDPlaylistItem, MPDStoredPlaylist } from './mpd-objects';
 import { MPC } from './mpc';
 
-class SimpleObservable {
+export class SimpleObservable {
 
 	private observers: Array<() => void> = [];
 	

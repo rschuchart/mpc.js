@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "A javascript client library for the Music Player Daemon",
   "files": [
-    "lib"
+    "lib",
+    "typings"
   ],
   "main": "lib/node-mpc.js",
   "scripts": {

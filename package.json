@@ -1,5 +1,5 @@
 {
-  "name": "mpc.js",
+  "name": "mpc-js",
   "version": "1.0.0",
   "description": "A javascript client library for the Music Player Daemon",
   "files": [
